@@ -37,20 +37,27 @@ def get_api_id_and_hash():
         API_ID = int(input("Please enter your API ID: "))
     except ValueError:
         print("APP ID must be an integer.\nQuitting...")
-        exit(0)
+        exit(1)
     API_HASH = input("Please enter your API HASH: ")
     return API_ID, API_HASH
 
 
 def telethon_session():
+    spinner()
     try:
-        spinner()
+        import telethon  # noqa: F401
 
         x = "\bFound an existing installation of Telethon...\nSuccessfully Imported.\n\n"
-    except BaseException:
+    except ImportError:
         print("Installing Telethon...")
-        os.system("pip install -U telethon")
-
+        if os.system("pip install -U telethon") != 0:
+            print("Failed to install Telethon. Please install it manually.\nQuitting...")
+            exit(1)
+        try:
+            import telethon  # noqa: F401
+        except ImportError as e:
+            print(f"Telethon is still not importable after install: {e}\nQuitting...")
+            exit(1)
         x = "\bDone. Installed and imported Telethon."
     clear_screen()
     print(a)
@@ -80,13 +87,13 @@ def telethon_session():
         print(
             "Your API ID/API HASH combination is invalid. Kindly recheck.\nQuitting..."
         )
-        exit(0)
+        exit(1)
     except ValueError:
         print("API HASH must not be empty!\nQuitting...")
-        exit(0)
+        exit(1)
     except PhoneNumberInvalidError:
         print("The phone number is invalid!\nQuitting...")
-        exit(0)
+        exit(1)
 
 
 def main():
