@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["."]
+
+[tool.coverage.run]
+source = [".", "handlers", "env", "session"]
+omit = [
+    "tests/*",
+    "notebooks/*",
+    "Modulos/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+    "except BaseException:",
+    "pass",
+]
